@@ -142,20 +142,16 @@ async function main() {
   const sku1 = await prisma.sku.create({
     data: {
       productId: product1.id,
-      sku: 'PHONE-XYZ-BLK-128',
-      color: 'Black',
-      size: '128GB',
-      stockQty: 100,
+      skuCode: 'PHONE-XYZ-BLK-128',
+      variantJson: { color: 'Black', size: '128GB' },
     },
   });
 
   const sku2 = await prisma.sku.create({
     data: {
       productId: product2.id,
-      sku: 'HEADPHONE-PREM-BLK',
-      color: 'Black',
-      size: 'One Size',
-      stockQty: 50,
+      skuCode: 'HEADPHONE-PREM-BLK',
+      variantJson: { color: 'Black', size: 'One Size' },
     },
   });
 
