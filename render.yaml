@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: dropship-hub
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: dropship-hub-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_ENC_KEY
+        generateValue: true
+
+databases:
+  - name: dropship-hub-db
+    databaseName: dropship_hub
+    user: dropship_user
+    plan: free
