@@ -1,0 +1,12 @@
+# Git Aliases para Múltiplas Contas
+# Cole isso no seu ~/.gitconfig
+
+[alias]
+    # Alternar para conta pessoal
+    personal = "!git config user.name 'Daniel Jorge' && git config user.email 'danjorge@gmail.com' && git remote set-url origin $(git remote get-url origin | sed 's/github-applaudo/github-personal/g' | sed 's/@github.com/@github-personal/g') && echo '✅ Switched to PERSONAL account (danjorge)'"
+    
+    # Alternar para conta de trabalho
+    work = "!git config user.name 'Daniel Jorge' && git config user.email 'danieljorgedesouza@applaudo.com' && git remote set-url origin $(git remote get-url origin | sed 's/github-personal/github-applaudo/g' | sed 's/@github.com/@github-applaudo/g') && echo '✅ Switched to WORK account (applaudo)'"
+    
+    # Ver configuração atual
+    whoami = "!echo '👤 User: '$(git config user.name) && echo '📧 Email: '$(git config user.email) && echo '🔗 Remote: '$(git remote get-url origin)"
