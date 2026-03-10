@@ -38,7 +38,7 @@ import { validate } from './config/env.validation';
     FulfillmentsModule,
     IntegrationsModule,
     InventoryModule,
-    JobsModule,
+    // JobsModule, // Temporarily disabled - requires Redis
     DashboardModule,
     HealthModule,
     PrismaModule,
