@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "installCommand": "npm install --legacy-peer-deps",
-  "buildCommand": "npx prisma@5.22.0 generate && npm run build",
+  "installCommand": "npm ci --legacy-peer-deps || npm install --legacy-peer-deps",
+  "buildCommand": "npx prisma@5.22.0 generate && ./node_modules/.bin/nest build",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
