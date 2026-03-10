@@ -1,13 +1,17 @@
 import { NestFactory } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import express from 'express';
 
+const expressApp = express();
+const adapter = new ExpressAdapter(expressApp);
 let app;
 
 async function bootstrap() {
   if (!app) {
-    app = await NestFactory.create(AppModule, {
+    app = await NestFactory.create(AppModule, adapter, {
       logger: ['error', 'warn', 'log'],
     });
     
@@ -34,11 +38,10 @@ async function bootstrap() {
     await app.init();
   }
   
-  return app;
+  return expressApp;
 }
 
 export default async (req, res) => {
-  const server = await bootstrap();
-  const expressApp = server.getHttpAdapter().getInstance();
-  return expressApp(req, res);
+  await bootstrap();
+  expressApp(req, res);
 };
