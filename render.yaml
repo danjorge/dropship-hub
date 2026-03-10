@@ -4,8 +4,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install --legacy-peer-deps && npx prisma generate && npm run build
-    startCommand: npm run start:prod
+    buildCommand: npm install --legacy-peer-deps && npx prisma generate && npx nest build
+    startCommand: node dist/main
     envVars:
       - key: NODE_ENV
         value: production
