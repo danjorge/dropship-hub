@@ -2,7 +2,7 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "pnpm run build"
+    "buildCommand": "VITE_API_BASE_URL=https://dropship-hub-production.up.railway.app pnpm run build"
   },
   "deploy": {
     "startCommand": "sh start.sh",
