@@ -15,12 +15,12 @@ export function FinancePage() {
   if (walletLoading || transactionsLoading) return <LoadingState />;
   if (walletError || transactionsError) return <ErrorState message={t('common.error')} onRetry={() => refetchWallet()} />;
 
-  const transactions = transactionsData?.transactions || [];
+  const transactions = (transactionsData as any)?.transactions || [];
 
   return (
     <PageContainer
       title={t('finance.title')}
-      description={t('finance.description')}
+      description={t('finance.pageDescription')}
     >
       {/* Wallet Balance Card */}
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white mb-6">
@@ -28,7 +28,7 @@ export function FinancePage() {
           <div>
             <p className="text-sm opacity-90 mb-1">{t('finance.availableBalance')}</p>
             <h2 className="text-4xl font-bold">
-              R$ {wallet?.balance?.toFixed(2) || '0.00'}
+              R$ {(wallet as any)?.balance?.toFixed(2) || '0.00'}
             </h2>
           </div>
           <button
@@ -55,7 +55,7 @@ export function FinancePage() {
                     {t('finance.date')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {t('finance.description')}
+                    {t('finance.transactionDescription')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {t('finance.type')}
