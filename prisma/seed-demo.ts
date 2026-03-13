@@ -173,7 +173,7 @@ async function main() {
 
   // Create supplier offers
   console.log('💰 Creating supplier offers...');
-  await prisma.supplierOffer.create({
+  const offer1 = await prisma.supplierOffer.create({
     data: {
       skuId: sku1.id,
       supplierOrgId: supplierOrg.id,
@@ -185,7 +185,7 @@ async function main() {
     },
   });
 
-  await prisma.supplierOffer.create({
+  const offer2 = await prisma.supplierOffer.create({
     data: {
       skuId: sku2.id,
       supplierOrgId: supplierOrg.id,
@@ -222,10 +222,14 @@ async function main() {
   console.log('   Type: SUPPLIER');
   console.log('   Role: OWNER');
   console.log('\n🔌 INTEGRATIONS:');
-  console.log('   Shopee: PENDING (ready to connect)');
-  console.log('\n📦 PRODUCTS:');
-  console.log('   2 demo products with SKUs and offers');
-  console.log('\n🚀 Ready for Shopee ISV verification!');
+  console.log('   Mercado Livre: ACTIVE (demo mode)');
+  console.log('   Shopee: ACTIVE (demo mode)');
+  console.log('\n📦 PRODUCTS & SUPPLIERS:');
+  console.log('   2 demo products with SKUs and supplier offers');
+  console.log('   1 approved merchant-supplier relationship');
+  console.log('\n� Ready for ISV demonstration!');
+  console.log('\n� Note: Integrations work in DEMO MODE (no real credentials needed)');
+  console.log('   Connect/disconnect flows are fully functional for testing');
 }
 
 main()

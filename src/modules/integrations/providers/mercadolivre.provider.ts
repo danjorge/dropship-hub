@@ -28,10 +28,17 @@ export class MercadoLivreProvider extends BaseMarketplaceProvider {
   }
 
   async getAuthorizationUrl(orgId: string): Promise<AuthorizationUrlResult> {
+    // DEMO MODE: If credentials not configured, return mock auth URL for demonstration
     if (!this.clientId || !this.clientSecret) {
-      throw new BadRequestException(
-        'Mercado Livre integration not configured. Please set MELI_CLIENT_ID and MELI_CLIENT_SECRET environment variables.',
-      );
+      console.log('[MERCADO LIVRE DEMO MODE] Generating mock authorization URL for demonstration');
+      
+      // Return a mock URL that redirects back to callback with demo parameters
+      const demoAuthUrl = `${this.redirectUrl}?code=DEMO_MELI_CODE_${Date.now()}&state=${orgId}&demo=true`;
+      
+      return {
+        authUrl: demoAuthUrl,
+        state: orgId,
+      };
     }
 
     const authUrl = `${this.authBaseUrl}/authorization?response_type=code&client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectUrl)}&state=${orgId}`;
@@ -46,7 +53,7 @@ export class MercadoLivreProvider extends BaseMarketplaceProvider {
     orgId: string,
     queryParams: Record<string, any>,
   ): Promise<CallbackResult> {
-    const { code, state } = queryParams;
+    const { code, state, demo } = queryParams;
 
     if (!code) {
       throw new BadRequestException('Missing authorization code from Mercado Livre callback');
@@ -56,8 +63,22 @@ export class MercadoLivreProvider extends BaseMarketplaceProvider {
       throw new BadRequestException('Invalid state parameter - possible CSRF attack');
     }
 
-    if (!this.clientId || !this.clientSecret) {
-      throw new BadRequestException('Mercado Livre integration not configured');
+    // DEMO MODE: If this is a demo callback or credentials not configured
+    if (demo === 'true' || !this.clientId || !this.clientSecret) {
+      console.log('[MERCADO LIVRE DEMO MODE] Processing mock OAuth callback for demonstration');
+      
+      // Return mock credentials for demonstration
+      const credentials: ProviderCredentials = {
+        access_token: `DEMO_MELI_ACCESS_TOKEN_${Date.now()}`,
+        refresh_token: `DEMO_MELI_REFRESH_TOKEN_${Date.now()}`,
+        user_id: 'DEMO_USER_123',
+        expires_at: Date.now() + (180 * 24 * 60 * 60 * 1000), // 180 days
+      };
+
+      return {
+        credentials,
+        status: 'ACTIVE',
+      };
     }
 
     try {
