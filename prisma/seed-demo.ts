@@ -104,14 +104,30 @@ async function main() {
     },
   });
 
-  // Create demo Shopee integration (PENDING state for demonstration)
-  console.log('🔌 Creating demo Shopee integration...');
+  // Create demo Mercado Livre integration (ACTIVE state to show multi-platform capability)
+  console.log('🔌 Creating demo Mercado Livre integration (ACTIVE)...');
+  await prisma.integration.create({
+    data: {
+      orgId: merchantOrg.id,
+      provider: Provider.MERCADOLIVRE,
+      status: 'ACTIVE',
+      credentialsEnc: 'demo_meli_credentials_encrypted', // Demo encrypted credentials
+    },
+  });
+
+  // Create demo Shopee integration (ACTIVE state with mock credentials for ISV review)
+  console.log('🔌 Creating demo Shopee integration (ACTIVE - DEMO MODE)...');
   await prisma.integration.create({
     data: {
       orgId: merchantOrg.id,
       provider: Provider.SHOPEE,
-      status: 'PENDING',
-      credentialsEnc: '', // Empty for demo - will be filled when user connects
+      status: 'ACTIVE',
+      credentialsEnc: JSON.stringify({
+        access_token: 'DEMO_ACCESS_TOKEN_FOR_ISV_REVIEW',
+        refresh_token: 'DEMO_REFRESH_TOKEN_FOR_ISV_REVIEW',
+        shop_id: 'DEMO_SHOP_123',
+        expires_at: Date.now() + (365 * 24 * 60 * 60 * 1000), // 1 year
+      }),
     },
   });
 
