@@ -49,6 +49,12 @@ enum TransactionType {
   DEBIT
 }
 
+enum OrderPaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
 enum TransactionCategory {
   PIX_DEPOSIT
   ORDER_PAYMENT
@@ -303,15 +309,16 @@ model StockReservation {
 }
 
 model MarketplaceOrder {
-  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  merchantOrgId       String   @map("merchant_org_id") @db.Uuid
+  id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  merchantOrgId       String             @map("merchant_org_id") @db.Uuid
   provider            Provider
-  externalOrderId     String   @map("external_order_id")
+  externalOrderId     String             @map("external_order_id")
   status              String
-  buyerName           String?  @map("buyer_name")
-  shippingAddressJson Json?    @map("shipping_address_json")
-  totalCents          Int?     @map("total_cents")
-  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+  paymentStatus       OrderPaymentStatus @default(PENDING) @map("payment_status")
+  buyerName           String?            @map("buyer_name")
+  shippingAddressJson Json?              @map("shipping_address_json")
+  totalCents          Int?               @map("total_cents")
+  createdAt           DateTime           @default(now()) @map("created_at") @db.Timestamptz
 
   merchant     Org                    @relation("MerchantOrders", fields: [merchantOrgId], references: [id], onDelete: Cascade)
   items        MarketplaceOrderItem[]

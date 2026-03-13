@@ -1,8 +1,9 @@
 import { Injectable, ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../../common/db/prisma.service';
-import { OrgType, Provider } from '@prisma/client';
+import { OrgType, Provider, OrderPaymentStatus } from '@prisma/client';
 import { GetOrdersDto } from '../dto/get-orders.dto';
 import { IntegrationsService } from '../../integrations/integrations.service';
+import { FinanceService } from '../../finance/finance.service';
 
 export interface OrdersResponse {
   providers: Provider[];
@@ -62,6 +63,7 @@ export class OrdersService {
   constructor(
     private prisma: PrismaService,
     private integrationsService: IntegrationsService,
+    private financeService: FinanceService,
   ) {}
 
   async getOrders(
@@ -282,6 +284,105 @@ export class OrdersService {
         listing: item.listing,
       })),
       fulfillments: order.fulfillments.map((fulfillment) => ({
+        id: fulfillment.id,
+        status: fulfillment.status,
+        trackingCode: fulfillment.trackingCode,
+        carrier: fulfillment.carrier,
+        shippedAt: fulfillment.shippedAt,
+        createdAt: fulfillment.createdAt,
+        supplier: fulfillment.supplier,
+      })),
+    };
+  }
+
+  async payOrder(merchantOrgId: string, orderId: string) {
+    // Verify org is MERCHANT
+    const org = await this.prisma.org.findUnique({
+      where: { id: merchantOrgId },
+      select: { type: true },
+    });
+
+    if (!org || org.type !== OrgType.MERCHANT) {
+      throw new ForbiddenException('Only MERCHANT orgs can pay orders');
+    }
+
+    // Get order with items
+    const order = await this.prisma.marketplaceOrder.findFirst({
+      where: {
+        id: orderId,
+        merchantOrgId,
+      },
+      include: {
+        items: true,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    // Check if already paid
+    if (order.paymentStatus === OrderPaymentStatus.PAID) {
+      throw new BadRequestException('Order is already paid');
+    }
+
+    // Calculate total cost (sum of items)
+    const totalCostCents = order.items.reduce((sum, item) => sum + (item.priceCents * item.qty), 0);
+
+    if (totalCostCents <= 0) {
+      throw new BadRequestException('Order total must be greater than zero');
+    }
+
+    // Debit from wallet and update order status in a transaction
+    const result = await this.prisma.$transaction(async (tx) => {
+      // Debit wallet (this will throw if insufficient balance)
+      await this.financeService.debitForOrder(
+        merchantOrgId,
+        orderId,
+        totalCostCents,
+        `Pagamento do pedido ${order.externalOrderId}`,
+      );
+
+      // Update order payment status
+      const updatedOrder = await tx.marketplaceOrder.update({
+        where: { id: orderId },
+        data: {
+          paymentStatus: OrderPaymentStatus.PAID,
+        },
+        include: {
+          items: {
+            include: {
+              listing: true,
+            },
+          },
+          fulfillments: {
+            include: {
+              supplier: true,
+            },
+          },
+        },
+      });
+
+      return updatedOrder;
+    });
+
+    return {
+      id: result.id,
+      provider: result.provider,
+      externalOrderId: result.externalOrderId,
+      status: result.status,
+      paymentStatus: result.paymentStatus,
+      buyerName: result.buyerName,
+      shippingAddressJson: result.shippingAddressJson,
+      totalCents: totalCostCents,
+      createdAt: result.createdAt,
+      items: result.items.map((item) => ({
+        id: item.id,
+        qty: item.qty,
+        priceCents: item.priceCents,
+        listing: item.listing,
+      })),
+      fulfillments: result.fulfillments.map((fulfillment) => ({
         id: fulfillment.id,
         status: fulfillment.status,
         trackingCode: fulfillment.trackingCode,

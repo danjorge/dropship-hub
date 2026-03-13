@@ -40,4 +40,10 @@ export const ordersApi = {
       requiresOrg: true,
     });
   },
+
+  payOrder: (orderId: string) => {
+    return apiClient.post<OrderDetails>(`/orders/${orderId}/pay`, {}, {
+      requiresOrg: true,
+    });
+  },
 };

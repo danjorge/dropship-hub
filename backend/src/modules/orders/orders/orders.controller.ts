@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiSecurity, ApiParam } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -73,5 +73,26 @@ export class OrdersController {
   @ApiResponse({ status: 404, description: 'Order not found' })
   getOrderById(@OrgId() orgId: string, @Param('id') orderId: string) {
     return this.ordersService.getOrderById(orgId, orderId);
+  }
+
+  @Post(':id/pay')
+  @ApiOperation({
+    summary: 'Pay order',
+    description: 'Pay for an unpaid order using wallet balance. Debits the total cost from the merchant wallet.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Order ID (UUID)',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Order paid successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request - order already paid or insufficient balance' })
+  @ApiResponse({ status: 403, description: 'Forbidden - order does not belong to your organization' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
+  payOrder(@OrgId() orgId: string, @Param('id') orderId: string) {
+    return this.ordersService.payOrder(orgId, orderId);
   }
 }
