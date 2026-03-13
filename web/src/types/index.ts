@@ -325,7 +325,7 @@ export interface ShipFulfillmentRequest {
 
 // Supplier Types (for merchant browsing)
 export interface Supplier {
-  orgId: string;
+  id: string;
   name: string;
   type: OrgType;
 }

@@ -23,8 +23,8 @@ export function SuppliersListPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {suppliers.map((supplier) => (
             <button
-              key={supplier.orgId}
-              onClick={() => navigate(`/catalog/suppliers/${supplier.orgId}/products`)}
+              key={supplier.id}
+              onClick={() => navigate(`/catalog/suppliers/${supplier.id}/products`)}
               className="p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-left border-2 border-transparent hover:border-blue-500"
             >
               <h3 className="text-lg font-semibold text-gray-900">{supplier.name}</h3>
