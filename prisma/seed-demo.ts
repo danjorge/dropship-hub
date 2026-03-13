@@ -197,6 +197,24 @@ async function main() {
     },
   });
 
+  // Create product images
+  console.log('🖼️ Creating product images...');
+  await prisma.productImage.create({
+    data: {
+      productId: product1.id,
+      url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400',
+      sortOrder: 0,
+    },
+  });
+
+  await prisma.productImage.create({
+    data: {
+      productId: product2.id,
+      url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+      sortOrder: 0,
+    },
+  });
+
   // Create merchant-supplier relationship
   console.log('🤝 Creating merchant-supplier relationship...');
   await prisma.merchantSupplier.create({
