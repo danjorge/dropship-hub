@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useOrders } from '@/hooks/useOrders';
+import { useOrders, usePayOrder } from '@/hooks/useOrders';
 import { PageContainer } from '@/components/common/PageContainer';
 import { LoadingState } from '@/components/common/LoadingState';
 import { ErrorState } from '@/components/common/ErrorState';
 import { EmptyState } from '@/components/common/EmptyState';
-import type { Provider } from '@/types';
+import type { Provider, OrderPaymentStatus } from '@/types';
 
 const REFRESH_INTERVAL = 30000; // 30 seconds for near-real-time updates
 
@@ -29,6 +29,8 @@ export function OrdersPage() {
     },
     { refetchInterval: REFRESH_INTERVAL }
   );
+
+  const payOrder = usePayOrder();
 
   // Update last updated timestamp when data changes
   useEffect(() => {
@@ -92,10 +94,10 @@ export function OrdersPage() {
   };
 
   const getFulfillmentBadgeColor = (status: string) => {
-    switch (status) {
-      case 'SHIPPED':
-        return 'bg-blue-100 text-blue-800';
+    switch (status.toUpperCase()) {
       case 'CONFIRMED':
+        return 'bg-blue-100 text-blue-800';
+      case 'SHIPPED':
         return 'bg-green-100 text-green-800';
       case 'NEW':
         return 'bg-yellow-100 text-yellow-800';
@@ -103,6 +105,29 @@ export function OrdersPage() {
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getPaymentStatusBadgeColor = (status: OrderPaymentStatus) => {
+    switch (status) {
+      case 'PAID':
+        return 'bg-green-100 text-green-800';
+      case 'PENDING':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'FAILED':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handlePayOrder = async (orderId: string) => {
+    try {
+      await payOrder.mutateAsync(orderId);
+      alert(t('orders.paymentSuccess'));
+    } catch (error: any) {
+      const errorMessage = error?.message || t('orders.paymentError');
+      alert(errorMessage.includes('Insufficient') ? t('orders.insufficientBalance') : errorMessage);
     }
   };
 
@@ -239,6 +264,9 @@ export function OrdersPage() {
                         {t('orders.orderStatus')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('orders.paymentStatus')}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         {t('orders.fulfillmentStatus')}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -275,6 +303,11 @@ export function OrdersPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPaymentStatusBadgeColor(order.paymentStatus)}`}>
+                            {t(`orders.payment${order.paymentStatus.charAt(0) + order.paymentStatus.slice(1).toLowerCase()}`)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           {order.fulfillment ? (
                             <div className="space-y-1">
                               <span className={`px-2 py-1 text-xs font-medium rounded-full ${getFulfillmentBadgeColor(order.fulfillment.status)}`}>
@@ -294,12 +327,23 @@ export function OrdersPage() {
                           {formatDateTime(order.createdAt)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          <button
-                            onClick={() => navigate(`/orders/${order.id}`)}
-                            className="text-blue-600 hover:text-blue-900 font-medium"
-                          >
-                            {t('orders.viewDetails')}
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => navigate(`/orders/${order.id}`)}
+                              className="text-blue-600 hover:text-blue-900 font-medium"
+                            >
+                              {t('orders.viewDetails')}
+                            </button>
+                            {order.paymentStatus === 'PENDING' && (
+                              <button
+                                onClick={() => handlePayOrder(order.id)}
+                                disabled={payOrder.isPending}
+                                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
+                              >
+                                {payOrder.isPending ? t('orders.paying') : t('orders.payOrder')}
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

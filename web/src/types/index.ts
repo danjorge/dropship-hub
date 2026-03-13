@@ -236,12 +236,14 @@ export interface CreateListingRequest {
 
 // Order & Fulfillment Types
 export type FulfillmentStatus = 'NEW' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+export type OrderPaymentStatus = 'PENDING' | 'PAID' | 'FAILED';
 
 export interface MarketplaceOrder {
   id: string;
   provider: Provider;
   externalOrderId: string;
   status: string;
+  paymentStatus: OrderPaymentStatus;
   buyerName: string | null;
   totalCents: number | null;
   createdAt: string;
@@ -275,6 +277,7 @@ export interface OrderDetails {
   provider: Provider;
   externalOrderId: string;
   status: string;
+  paymentStatus: OrderPaymentStatus;
   buyerName: string | null;
   shippingAddressJson: any;
   totalCents: number | null;
