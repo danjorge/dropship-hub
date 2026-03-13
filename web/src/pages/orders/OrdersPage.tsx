@@ -18,6 +18,7 @@ export function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
 
   const { data: response, isLoading, error, refetch, dataUpdatedAt } = useOrders(
     {
@@ -122,12 +123,28 @@ export function OrdersPage() {
   };
 
   const handlePayOrder = async (orderId: string) => {
+    setPayingOrderId(orderId);
     try {
       await payOrder.mutateAsync(orderId);
+      // Success - refetch to update the list
+      await refetch();
       alert(t('orders.paymentSuccess'));
     } catch (error: any) {
       const errorMessage = error?.message || t('orders.paymentError');
-      alert(errorMessage.includes('Insufficient') ? t('orders.insufficientBalance') : errorMessage);
+      const isInsufficientBalance = errorMessage.includes('Insufficient') || errorMessage.includes('insuficiente');
+      
+      if (isInsufficientBalance) {
+        const goToFinance = window.confirm(
+          `${t('orders.insufficientBalance')}. ${t('orders.goToFinanceQuestion')}`
+        );
+        if (goToFinance) {
+          navigate('/finance');
+        }
+      } else {
+        alert(errorMessage);
+      }
+    } finally {
+      setPayingOrderId(null);
     }
   };
 
@@ -343,10 +360,10 @@ export function OrdersPage() {
                             {(order.paymentStatus === 'PENDING' || !order.paymentStatus) && (
                               <button
                                 onClick={() => handlePayOrder(order.id)}
-                                disabled={payOrder.isPending}
+                                disabled={payingOrderId !== null}
                                 className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
                               >
-                                {payOrder.isPending ? t('orders.paying') : t('orders.payOrder')}
+                                {payingOrderId === order.id ? t('orders.paying') : t('orders.payOrder')}
                               </button>
                             )}
                           </div>

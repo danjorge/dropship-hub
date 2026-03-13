@@ -259,6 +259,7 @@
     "paymentSuccess": "Pedido pago com sucesso!",
     "paymentError": "Erro ao pagar pedido",
     "insufficientBalance": "Saldo insuficiente",
+    "goToFinanceQuestion": "Deseja ir para a página de Finanças para adicionar créditos?",
     "page": "Página",
     "quantity": "Quantidade",
     "unitPrice": "Preço Unitário",

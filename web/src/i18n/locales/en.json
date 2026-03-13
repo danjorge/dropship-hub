@@ -214,6 +214,7 @@
     "paymentSuccess": "Order paid successfully!",
     "paymentError": "Error paying order",
     "insufficientBalance": "Insufficient balance",
+    "goToFinanceQuestion": "Would you like to go to the Finance page to add credits?",
     "page": "Page",
     "of": "of",
     "quantity": "Quantity",
