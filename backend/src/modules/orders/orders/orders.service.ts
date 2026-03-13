@@ -12,6 +12,7 @@ export interface OrdersResponse {
     provider: Provider;
     externalOrderId: string;
     status: string;
+    paymentStatus: OrderPaymentStatus;
     buyerName: string | null;
     totalCents: number | null;
     createdAt: Date;
@@ -194,6 +195,7 @@ export class OrdersService {
       provider: order.provider,
       externalOrderId: order.externalOrderId,
       status: order.status,
+      paymentStatus: order.paymentStatus,
       buyerName: order.buyerName,
       totalCents: order.totalCents,
       createdAt: order.createdAt,
