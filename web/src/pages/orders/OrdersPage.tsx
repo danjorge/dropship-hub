@@ -303,9 +303,15 @@ export function OrdersPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPaymentStatusBadgeColor(order.paymentStatus)}`}>
-                            {t(`orders.payment${order.paymentStatus.charAt(0) + order.paymentStatus.slice(1).toLowerCase()}`)}
-                          </span>
+                          {order.paymentStatus ? (
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPaymentStatusBadgeColor(order.paymentStatus)}`}>
+                              {t(`orders.payment${order.paymentStatus.charAt(0) + order.paymentStatus.slice(1).toLowerCase()}`)}
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">
+                              {t('orders.paymentPending')}
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {order.fulfillment ? (
@@ -334,7 +340,7 @@ export function OrdersPage() {
                             >
                               {t('orders.viewDetails')}
                             </button>
-                            {order.paymentStatus === 'PENDING' && (
+                            {(order.paymentStatus === 'PENDING' || !order.paymentStatus) && (
                               <button
                                 onClick={() => handlePayOrder(order.id)}
                                 disabled={payOrder.isPending}
