@@ -17,7 +17,25 @@
     "back": "Voltar",
     "price": "Preço",
     "stock": "Estoque",
-    "error": "Erro ao carregar dados"
+    "error": "Erro ao carregar dados",
+    "loading": "Carregando...",
+    "retry": "Tentar Novamente",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "export": "Exportar",
+    "import": "Importar",
+    "previous": "Anterior",
+    "next": "Próximo",
+    "showing": "Mostrando",
+    "to": "até",
+    "of": "de",
+    "results": "resultados",
+    "organization": "Organização"
   },
   "navigation": {
     "dashboard": "Painel",
@@ -267,26 +285,5 @@
     "confirmDisconnect": "Tem certeza que deseja desconectar {{provider}}? Isso irá parar a sincronização de pedidos e anúncios.",
     "helpTitle": "Como funcionam as integrações?",
     "helpText": "Quando você conecta um marketplace, sincronizamos seus anúncios e pedidos automaticamente. Você pode gerenciar tudo em um único painel."
-  },
-  "common": {
-    "loading": "Carregando...",
-    "error": "Ocorreu um erro",
-    "retry": "Tentar Novamente",
-    "save": "Salvar",
-    "cancel": "Cancelar",
-    "delete": "Excluir",
-    "edit": "Editar",
-    "create": "Criar",
-    "search": "Pesquisar",
-    "filter": "Filtrar",
-    "export": "Exportar",
-    "import": "Importar",
-    "previous": "Anterior",
-    "next": "Próximo",
-    "showing": "Mostrando",
-    "to": "até",
-    "of": "de",
-    "results": "resultados",
-    "organization": "Organização"
   }
 }
