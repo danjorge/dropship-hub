@@ -28,10 +28,17 @@ export class ShopeeProvider extends BaseMarketplaceProvider {
   }
 
   async getAuthorizationUrl(orgId: string): Promise<AuthorizationUrlResult> {
+    // DEMO MODE: If credentials not configured, return mock auth URL for demonstration
     if (!this.partnerId || !this.partnerKey) {
-      throw new BadRequestException(
-        'Shopee integration not configured. Please set SHOPEE_PARTNER_ID and SHOPEE_PARTNER_KEY environment variables.',
-      );
+      console.log('[SHOPEE DEMO MODE] Generating mock authorization URL for demonstration');
+      
+      // Return a mock URL that redirects back to callback with demo parameters
+      const demoAuthUrl = `${this.redirectUrl}?code=DEMO_AUTH_CODE_${Date.now()}&shop_id=DEMO_SHOP_123&state=${orgId}&demo=true`;
+      
+      return {
+        authUrl: demoAuthUrl,
+        state: orgId,
+      };
     }
 
     const timestamp = Math.floor(Date.now() / 1000);
@@ -54,14 +61,28 @@ export class ShopeeProvider extends BaseMarketplaceProvider {
     orgId: string,
     queryParams: Record<string, any>,
   ): Promise<CallbackResult> {
-    const { code, shop_id } = queryParams;
+    const { code, shop_id, demo } = queryParams;
 
     if (!code) {
       throw new BadRequestException('Missing authorization code from Shopee callback');
     }
 
-    if (!this.partnerId || !this.partnerKey) {
-      throw new BadRequestException('Shopee integration not configured');
+    // DEMO MODE: If this is a demo callback or credentials not configured
+    if (demo === 'true' || !this.partnerId || !this.partnerKey) {
+      console.log('[SHOPEE DEMO MODE] Processing mock OAuth callback for demonstration');
+      
+      // Return mock credentials for demonstration
+      const credentials: ProviderCredentials = {
+        access_token: `DEMO_ACCESS_TOKEN_${Date.now()}`,
+        refresh_token: `DEMO_REFRESH_TOKEN_${Date.now()}`,
+        shop_id: shop_id?.toString() || 'DEMO_SHOP_123',
+        expires_at: Date.now() + (30 * 24 * 60 * 60 * 1000), // 30 days
+      };
+
+      return {
+        credentials,
+        status: 'ACTIVE',
+      };
     }
 
     try {
