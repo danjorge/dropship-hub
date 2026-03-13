@@ -7,6 +7,7 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { ProductsListPage } from '@/pages/catalog/ProductsListPage';
 import { CreateProductPage } from '@/pages/catalog/CreateProductPage';
 import { SuppliersListPage } from '@/pages/catalog/SuppliersListPage';
+import { SupplierProductsPage } from '@/pages/catalog/SupplierProductsPage';
 import { ListingsPage } from '@/pages/listings/ListingsPage';
 import { FulfillmentsPage } from '@/pages/fulfillments/FulfillmentsPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';

@@ -67,10 +67,10 @@ export function SupplierProductsPage() {
                     {product.skus[0].offers && product.skus[0].offers.length > 0 && product.skus[0].offers[0] && (
                       <div className="space-y-1">
                         <p className="text-sm text-gray-600">
-                          {t('common.price')}: R$ {(product.skus[0].offers[0].msrpCents / 100).toFixed(2)}
+                          {t('common.price')}: R$ {((product.skus[0].offers[0]?.msrpCents || 0) / 100).toFixed(2)}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {t('common.stock')}: {product.skus[0].offers[0].stockQty}
+                          {t('common.stock')}: {product.skus[0].offers[0]?.stockQty || 0}
                         </p>
                       </div>
                     )}
