@@ -44,6 +44,25 @@ enum ReservationStatus {
   CONSUMED
 }
 
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionCategory {
+  PIX_DEPOSIT
+  ORDER_PAYMENT
+  REFUND
+  MANUAL_ADJUSTMENT
+}
+
+enum PixPaymentStatus {
+  PENDING
+  PAID
+  EXPIRED
+  CANCELLED
+}
+
 model Org {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name      String
@@ -61,6 +80,7 @@ model Org {
   fulfillmentAsSupplier FulfillmentOrder[] @relation("FulfillmentSupplier")
   fulfillmentAsMerchant FulfillmentOrder[] @relation("FulfillmentMerchant")
   idempotencyKeys       IdempotencyKey[]
+  wallet                Wallet?
 
   @@map("orgs")
 }
@@ -90,74 +110,74 @@ model OrgMember {
 }
 
 model Product {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  supplierOrgId String   @map("supplier_org_id") @db.Uuid
-  
+  id            String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  supplierOrgId String @map("supplier_org_id") @db.Uuid
+
   // Basic fields
-  title         String
-  description   String?
-  brand         String?
-  isActive      Boolean  @default(true) @map("is_active")
-  
+  title       String
+  description String?
+  brand       String?
+  isActive    Boolean @default(true) @map("is_active")
+
   // Brazilian product fields
-  codigo                        String?  @map("codigo")
-  unidade                       String?  @map("unidade")
-  ncm                           String?  @map("ncm")
-  origem                        String?  @map("origem")
-  preco                         Decimal? @map("preco") @db.Decimal(10, 2)
-  valorIpiFixo                  Decimal? @map("valor_ipi_fixo") @db.Decimal(10, 2)
-  observacoes                   String?  @map("observacoes")
-  situacao                      String?  @map("situacao")
-  estoque                       Int?     @map("estoque")
-  precosDeCusto                 Decimal? @map("precos_de_custo") @db.Decimal(10, 2)
-  codNoFornecedor               String?  @map("cod_no_fornecedor")
-  fornecedor                    String?  @map("fornecedor")
-  localizacao                   String?  @map("localizacao")
-  estoqueMaximo                 Int?     @map("estoque_maximo")
-  estoqueMinimo                 Int?     @map("estoque_minimo")
-  pesoLiquidoKg                 Decimal? @map("peso_liquido_kg") @db.Decimal(10, 3)
-  pesoBrutoKg                   Decimal? @map("peso_bruto_kg") @db.Decimal(10, 3)
-  gtinEan                       String?  @map("gtin_ean")
-  gtinEanDaEmbalagem            String?  @map("gtin_ean_da_embalagem")
-  larguraDoProduto              Decimal? @map("largura_do_produto") @db.Decimal(10, 2)
-  alturaDoProduto               Decimal? @map("altura_do_produto") @db.Decimal(10, 2)
-  profundidadeDoProduto         Decimal? @map("profundidade_do_produto") @db.Decimal(10, 2)
-  dataDeValidade                String?  @map("data_de_validade")
-  descricaoDoProdutoNoFornecedor String? @map("descricao_do_produto_no_fornecedor")
-  descricaoComplementar         String?  @map("descricao_complementar")
-  itensPorCaixa                 Int?     @map("itens_por_caixa")
-  produtoVariacao               String?  @map("produto_variacao")
-  tipoProducao                  String?  @map("tipo_producao")
-  classeDeEnquadramentoDoIpi    String?  @map("classe_de_enquadramento_do_ipi")
-  codigoListaDeServicos         String?  @map("codigo_lista_de_servicos")
-  tipoDoItem                    String?  @map("tipo_do_item")
-  grupoDeTags                   String?  @map("grupo_de_tags")
-  tributos                      String?  @map("tributos")
-  codigoPai                     String?  @map("codigo_pai")
-  codigoIntegracao              String?  @map("codigo_integracao")
-  grupoDeProdutos               String?  @map("grupo_de_produtos")
-  cest                          String?  @map("cest")
-  volumes                       Int?     @map("volumes")
-  descricaoCurta                String?  @map("descricao_curta")
-  crossDocking                  String?  @map("cross_docking")
-  urlImagensExternas            String?  @map("url_imagens_externas")
-  linkExterno                   String?  @map("link_externo")
-  mesesGarantiaFornecedor       Int?     @map("meses_garantia_fornecedor")
-  clonarDadosDoPai              String?  @map("clonar_dados_do_pai")
-  condicaoDoProduto             String?  @map("condicao_do_produto")
-  freteGratis                   String?  @map("frete_gratis")
-  numeroFci                     String?  @map("numero_fci")
-  video                         String?  @map("video")
-  departamento                  String?  @map("departamento")
-  unidadeDeMedida               String?  @map("unidade_de_medida")
-  precoDeCompra                 Decimal? @map("preco_de_compra") @db.Decimal(10, 2)
-  valorBaseIcsmStParaRetencao   Decimal? @map("valor_base_icsm_st_para_retencao") @db.Decimal(10, 2)
-  valorIcmsStParaRetencao       Decimal? @map("valor_icms_st_para_retencao") @db.Decimal(10, 2)
-  valorIcmsProprioDoSubstituto  Decimal? @map("valor_icms_proprio_do_substituto") @db.Decimal(10, 2)
-  categoriaDoProduto            String?  @map("categoria_do_produto")
-  informacoesAdicionais         String?  @map("informacoes_adicionais")
-  
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  codigo                         String?  @map("codigo")
+  unidade                        String?  @map("unidade")
+  ncm                            String?  @map("ncm")
+  origem                         String?  @map("origem")
+  preco                          Decimal? @map("preco") @db.Decimal(10, 2)
+  valorIpiFixo                   Decimal? @map("valor_ipi_fixo") @db.Decimal(10, 2)
+  observacoes                    String?  @map("observacoes")
+  situacao                       String?  @map("situacao")
+  estoque                        Int?     @map("estoque")
+  precosDeCusto                  Decimal? @map("precos_de_custo") @db.Decimal(10, 2)
+  codNoFornecedor                String?  @map("cod_no_fornecedor")
+  fornecedor                     String?  @map("fornecedor")
+  localizacao                    String?  @map("localizacao")
+  estoqueMaximo                  Int?     @map("estoque_maximo")
+  estoqueMinimo                  Int?     @map("estoque_minimo")
+  pesoLiquidoKg                  Decimal? @map("peso_liquido_kg") @db.Decimal(10, 3)
+  pesoBrutoKg                    Decimal? @map("peso_bruto_kg") @db.Decimal(10, 3)
+  gtinEan                        String?  @map("gtin_ean")
+  gtinEanDaEmbalagem             String?  @map("gtin_ean_da_embalagem")
+  larguraDoProduto               Decimal? @map("largura_do_produto") @db.Decimal(10, 2)
+  alturaDoProduto                Decimal? @map("altura_do_produto") @db.Decimal(10, 2)
+  profundidadeDoProduto          Decimal? @map("profundidade_do_produto") @db.Decimal(10, 2)
+  dataDeValidade                 String?  @map("data_de_validade")
+  descricaoDoProdutoNoFornecedor String?  @map("descricao_do_produto_no_fornecedor")
+  descricaoComplementar          String?  @map("descricao_complementar")
+  itensPorCaixa                  Int?     @map("itens_por_caixa")
+  produtoVariacao                String?  @map("produto_variacao")
+  tipoProducao                   String?  @map("tipo_producao")
+  classeDeEnquadramentoDoIpi     String?  @map("classe_de_enquadramento_do_ipi")
+  codigoListaDeServicos          String?  @map("codigo_lista_de_servicos")
+  tipoDoItem                     String?  @map("tipo_do_item")
+  grupoDeTags                    String?  @map("grupo_de_tags")
+  tributos                       String?  @map("tributos")
+  codigoPai                      String?  @map("codigo_pai")
+  codigoIntegracao               String?  @map("codigo_integracao")
+  grupoDeProdutos                String?  @map("grupo_de_produtos")
+  cest                           String?  @map("cest")
+  volumes                        Int?     @map("volumes")
+  descricaoCurta                 String?  @map("descricao_curta")
+  crossDocking                   String?  @map("cross_docking")
+  urlImagensExternas             String?  @map("url_imagens_externas")
+  linkExterno                    String?  @map("link_externo")
+  mesesGarantiaFornecedor        Int?     @map("meses_garantia_fornecedor")
+  clonarDadosDoPai               String?  @map("clonar_dados_do_pai")
+  condicaoDoProduto              String?  @map("condicao_do_produto")
+  freteGratis                    String?  @map("frete_gratis")
+  numeroFci                      String?  @map("numero_fci")
+  video                          String?  @map("video")
+  departamento                   String?  @map("departamento")
+  unidadeDeMedida                String?  @map("unidade_de_medida")
+  precoDeCompra                  Decimal? @map("preco_de_compra") @db.Decimal(10, 2)
+  valorBaseIcsmStParaRetencao    Decimal? @map("valor_base_icsm_st_para_retencao") @db.Decimal(10, 2)
+  valorIcmsStParaRetencao        Decimal? @map("valor_icms_st_para_retencao") @db.Decimal(10, 2)
+  valorIcmsProprioDoSubstituto   Decimal? @map("valor_icms_proprio_do_substituto") @db.Decimal(10, 2)
+  categoriaDoProduto             String?  @map("categoria_do_produto")
+  informacoesAdicionais          String?  @map("informacoes_adicionais")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   supplier Org            @relation("SupplierProducts", fields: [supplierOrgId], references: [id], onDelete: Cascade)
   skus     Sku[]
@@ -357,4 +377,60 @@ model IdempotencyKey {
 
   @@unique([orgId, key])
   @@map("idempotency_keys")
+}
+
+// Financial System Models
+
+model Wallet {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orgId        String   @unique @map("org_id") @db.Uuid
+  balanceCents Int      @default(0) @map("balance_cents")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  org          Org           @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  pixPayments  PixPayment[]
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id          String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  walletId    String              @map("wallet_id") @db.Uuid
+  type        TransactionType
+  category    TransactionCategory
+  amountCents Int                 @map("amount_cents")
+  description String
+  referenceId String?             @map("reference_id") @db.Uuid
+  metadata    Json?
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([referenceId])
+  @@map("transactions")
+}
+
+model PixPayment {
+  id             String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  walletId       String           @map("wallet_id") @db.Uuid
+  amountCents    Int              @map("amount_cents")
+  payerName      String           @map("payer_name")
+  payerDocument  String           @map("payer_document")
+  qrCodeData     String?          @map("qr_code_data") @db.Text
+  qrCodeImageUrl String?          @map("qr_code_image_url")
+  status         PixPaymentStatus @default(PENDING)
+  paidAt         DateTime?        @map("paid_at") @db.Timestamptz
+  expiresAt      DateTime         @map("expires_at") @db.Timestamptz
+  transactionId  String?          @unique @map("transaction_id") @db.Uuid
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([status])
+  @@map("pix_payments")
 }

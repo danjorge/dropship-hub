@@ -12,6 +12,7 @@ import { ListingsPage } from '@/pages/listings/ListingsPage';
 import { FulfillmentsPage } from '@/pages/fulfillments/FulfillmentsPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';
 import { IntegrationsPage } from '@/pages/IntegrationsPage';
+import { FinancePage } from '@/pages/finance/FinancePage';
 
 export function AppRouter() {
   return (
@@ -48,6 +49,7 @@ export function AppRouter() {
                   
                   {/* Integrations */}
                   <Route path="/integrations" element={<IntegrationsPage />} />
+                  <Route path="/finance" element={<FinancePage />} />
                 </Routes>
               </AppLayout>
             </ProtectedRoute>

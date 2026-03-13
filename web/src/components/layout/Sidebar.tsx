@@ -37,6 +37,12 @@ const navItems: NavItem[] = [
     orgTypes: ['MERCHANT'],
   },
   {
+    labelKey: 'navigation.finance',
+    path: '/finance',
+    icon: '💰',
+    orgTypes: ['MERCHANT'],
+  },
+  {
     labelKey: 'navigation.fulfillments',
     path: ROUTES.FULFILLMENTS,
     icon: '📮',

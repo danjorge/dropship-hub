@@ -18,6 +18,7 @@ import { PrismaModule } from "./common/db/prisma.module";
 import { AuthModule } from './modules/auth/auth.module';
 import { DebugModule } from './modules/debug/debug.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { FinanceModule } from './modules/finance/finance.module';
 import { validate } from './config/env.validation';
 
 @Module({
@@ -40,6 +41,7 @@ import { validate } from './config/env.validation';
     InventoryModule,
     // JobsModule, // Temporarily disabled - requires Redis
     DashboardModule,
+    FinanceModule,
     HealthModule,
     PrismaModule,
     AuthModule,

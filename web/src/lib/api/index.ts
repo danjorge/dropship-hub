@@ -1,7 +1,9 @@
 export { authApi } from './auth';
 export { catalogApi } from './catalog';
 export { listingsApi } from './listings';
-export { integrationsApi } from './integrations';
 export { ordersApi } from './orders';
 export { fulfillmentsApi } from './fulfillments';
+export { integrationsApi } from './integrations';
+export { dashboardApi } from './dashboard';
+export { financeApi } from './finance';
 export { apiClient } from './client';

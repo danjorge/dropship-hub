@@ -44,6 +44,7 @@
     "listings": "Anúncios",
     "fulfillments": "Atendimentos",
     "orders": "Pedidos",
+    "finance": "Finanças",
     "integrations": "Integrações"
   },
   "dashboard": {
@@ -285,5 +286,30 @@
     "confirmDisconnect": "Tem certeza que deseja desconectar {{provider}}? Isso irá parar a sincronização de pedidos e anúncios.",
     "helpTitle": "Como funcionam as integrações?",
     "helpText": "Quando você conecta um marketplace, sincronizamos seus anúncios e pedidos automaticamente. Você pode gerenciar tudo em um único painel."
+  },
+  "finance": {
+    "title": "Finanças",
+    "description": "Gerencie sua conta corrente e pagamentos",
+    "availableBalance": "Saldo Disponível",
+    "addCredits": "Adicionar Créditos",
+    "transactionHistory": "Histórico de Transações",
+    "date": "Data",
+    "description": "Descrição",
+    "type": "Tipo",
+    "amount": "Valor",
+    "credit": "Crédito",
+    "debit": "Débito",
+    "noTransactions": "Nenhuma transação encontrada",
+    "addCreditsViaPix": "Adicionar Créditos via PIX",
+    "fullName": "Nome Completo",
+    "cpf": "CPF",
+    "generateQRCode": "Gerar QR Code",
+    "pixQRCode": "QR Code PIX",
+    "scanQRCode": "Escaneie o QR Code com seu app bancário",
+    "paymentDetails": "Detalhes do Pagamento",
+    "confirmPayment": "Confirmar Pagamento (DEMO)",
+    "pixConfirmed": "Pagamento PIX confirmado! Créditos adicionados à sua conta.",
+    "demoMode": "Modo DEMO",
+    "demoModeDescription": "Em produção, o pagamento seria processado automaticamente. Clique em 'Confirmar Pagamento' para simular."
   }
 }
