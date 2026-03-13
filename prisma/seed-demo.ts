@@ -207,6 +207,135 @@ async function main() {
     },
   });
 
+  // Create demo listings (anúncios)
+  console.log('📢 Creating demo listings...');
+  const listing1 = await prisma.listing.create({
+    data: {
+      merchantOrgId: merchantOrg.id,
+      supplierOfferId: offer1.id,
+      provider: Provider.SHOPEE,
+      externalListingId: 'SHOPEE_LISTING_123456',
+      title: 'Smartphone XYZ Pro 128GB - Preto',
+      priceCents: 119900, // R$ 1,199.00
+      isActive: true,
+      syncStatus: 'SYNCED',
+      lastSyncedAt: new Date(),
+    },
+  });
+
+  const listing2 = await prisma.listing.create({
+    data: {
+      merchantOrgId: merchantOrg.id,
+      supplierOfferId: offer2.id,
+      provider: Provider.SHOPEE,
+      externalListingId: 'SHOPEE_LISTING_789012',
+      title: 'Fone de Ouvido Premium Sem Fio',
+      priceCents: 44900, // R$ 449.00
+      isActive: true,
+      syncStatus: 'SYNCED',
+      lastSyncedAt: new Date(),
+    },
+  });
+
+  const listing3 = await prisma.listing.create({
+    data: {
+      merchantOrgId: merchantOrg.id,
+      supplierOfferId: offer1.id,
+      provider: Provider.MERCADOLIVRE,
+      externalListingId: 'MLB123456789',
+      title: 'Smartphone XYZ Pro 128GB - Preto [NOVO]',
+      priceCents: 124900, // R$ 1,249.00
+      isActive: true,
+      syncStatus: 'SYNCED',
+      lastSyncedAt: new Date(),
+    },
+  });
+
+  // Create demo marketplace orders (pedidos)
+  console.log('🛒 Creating demo marketplace orders...');
+  const order1 = await prisma.marketplaceOrder.create({
+    data: {
+      merchantOrgId: merchantOrg.id,
+      provider: Provider.SHOPEE,
+      externalOrderId: 'SHOPEE_ORDER_001',
+      status: 'PENDING',
+      buyerName: 'João Silva',
+      totalCents: 119900,
+      shippingAddressJson: {
+        street: 'Rua das Flores, 123',
+        city: 'São Paulo',
+        state: 'SP',
+        zipCode: '01234-567',
+      },
+    },
+  });
+
+  const order2 = await prisma.marketplaceOrder.create({
+    data: {
+      merchantOrgId: merchantOrg.id,
+      provider: Provider.SHOPEE,
+      externalOrderId: 'SHOPEE_ORDER_002',
+      status: 'CONFIRMED',
+      buyerName: 'Maria Santos',
+      totalCents: 44900,
+      shippingAddressJson: {
+        street: 'Av. Paulista, 1000',
+        city: 'São Paulo',
+        state: 'SP',
+        zipCode: '01310-100',
+      },
+    },
+  });
+
+  const order3 = await prisma.marketplaceOrder.create({
+    data: {
+      merchantOrgId: merchantOrg.id,
+      provider: Provider.MERCADOLIVRE,
+      externalOrderId: 'MLB_ORDER_003',
+      status: 'SHIPPED',
+      buyerName: 'Pedro Costa',
+      totalCents: 124900,
+      shippingAddressJson: {
+        street: 'Rua do Comércio, 456',
+        city: 'Rio de Janeiro',
+        state: 'RJ',
+        zipCode: '20000-000',
+      },
+    },
+  });
+
+  // Create order items
+  console.log('📦 Creating order items...');
+  await prisma.marketplaceOrderItem.create({
+    data: {
+      marketplaceOrderId: order1.id,
+      listingId: listing1.id,
+      supplierOfferId: offer1.id,
+      qty: 1,
+      priceCents: 119900,
+    },
+  });
+
+  await prisma.marketplaceOrderItem.create({
+    data: {
+      marketplaceOrderId: order2.id,
+      listingId: listing2.id,
+      supplierOfferId: offer2.id,
+      qty: 1,
+      priceCents: 44900,
+    },
+  });
+
+  await prisma.marketplaceOrderItem.create({
+    data: {
+      marketplaceOrderId: order3.id,
+      listingId: listing3.id,
+      supplierOfferId: offer1.id,
+      qty: 1,
+      priceCents: 124900,
+    },
+  });
+
   console.log('✅ Demo seed completed successfully!');
   console.log('\n📋 Demo Accounts Created:');
   console.log('\n🛍️  MERCHANT ACCOUNT:');
@@ -227,9 +356,14 @@ async function main() {
   console.log('\n📦 PRODUCTS & SUPPLIERS:');
   console.log('   2 demo products with SKUs and supplier offers');
   console.log('   1 approved merchant-supplier relationship');
-  console.log('\n� Ready for ISV demonstration!');
-  console.log('\n� Note: Integrations work in DEMO MODE (no real credentials needed)');
-  console.log('   Connect/disconnect flows are fully functional for testing');
+  console.log('\n📢 LISTINGS:');
+  console.log('   3 active listings (2 Shopee + 1 Mercado Livre)');
+  console.log('\n🛒 ORDERS:');
+  console.log('   3 demo marketplace orders with items');
+  console.log('   - 1 PENDING, 1 CONFIRMED, 1 SHIPPED');
+  console.log('\n🚀 Ready for complete system demonstration!');
+  console.log('\n💡 Note: All integrations work in DEMO MODE (no real credentials needed)');
+  console.log('   Full OAuth flows, listings, and orders are functional for testing');
 }
 
 main()
