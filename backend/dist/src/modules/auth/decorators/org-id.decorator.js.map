@@ -1,1 +1,0 @@
-{"version":3,"file":"org-id.decorator.js","sourceRoot":"","sources":["../../../../../src/modules/auth/decorators/org-id.decorator.ts"],"names":[],"mappings":";;;AAAA,2CAAwE;AAE3D,QAAA,KAAK,GAAG,IAAA,6BAAoB,EACvC,CAAC,KAAc,EAAE,GAAqB,EAAU,EAAE;IAChD,MAAM,GAAG,GAAG,GAAG,CAAC,YAAY,EAAE,CAAC,UAAU,EAAE,CAAC;IAC5C,OAAO,GAAG,CAAC,KAAK,CAAC;AACnB,CAAC,CACF,CAAC"}

@@ -20,6 +20,7 @@
     "listings": "Listings",
     "fulfillments": "Fulfillments",
     "orders": "Orders",
+    "finance": "Finance",
     "integrations": "Integrations"
   },
   "dashboard": {
@@ -281,5 +282,30 @@
     "of": "of",
     "results": "results",
     "organization": "Organization"
+  },
+  "finance": {
+    "title": "Finance",
+    "pageDescription": "Manage your account balance and payments",
+    "availableBalance": "Available Balance",
+    "addCredits": "Add Credits",
+    "transactionHistory": "Transaction History",
+    "date": "Date",
+    "transactionDescription": "Description",
+    "type": "Type",
+    "amount": "Amount",
+    "credit": "Credit",
+    "debit": "Debit",
+    "noTransactions": "No transactions found",
+    "addCreditsViaPix": "Add Credits via PIX",
+    "fullName": "Full Name",
+    "cpf": "CPF",
+    "generateQRCode": "Generate QR Code",
+    "pixQRCode": "PIX QR Code",
+    "scanQRCode": "Scan the QR Code with your banking app",
+    "paymentDetails": "Payment Details",
+    "confirmPayment": "Confirm Payment (DEMO)",
+    "pixConfirmed": "PIX payment confirmed! Credits added to your account.",
+    "demoMode": "DEMO Mode",
+    "demoModeDescription": "In production, the payment would be processed automatically. Click 'Confirm Payment' to simulate."
   }
 }
