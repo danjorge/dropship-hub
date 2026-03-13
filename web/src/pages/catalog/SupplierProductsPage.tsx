@@ -5,14 +5,12 @@ import { PageContainer } from '@/components/common/PageContainer';
 import { LoadingState } from '@/components/common/LoadingState';
 import { ErrorState } from '@/components/common/ErrorState';
 import { EmptyState } from '@/components/common/EmptyState';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 
 export function SupplierProductsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { supplierOrgId } = useParams<{ supplierOrgId: string }>();
-  const { data: products, isLoading, error, refetch } = useSupplierProducts(supplierOrgId!);
+  const { data: products, isLoading, error, refetch } = useSupplierProducts(supplierOrgId || '');
 
   if (isLoading) return <LoadingState />;
   if (error) return <ErrorState message={t('common.error')} onRetry={() => refetch()} />;
@@ -23,14 +21,12 @@ export function SupplierProductsPage() {
       description={t('suppliers.browseProducts')}
     >
       <div className="mb-6">
-        <Button
-          variant="outline"
+        <button
           onClick={() => navigate('/catalog/suppliers')}
-          className="flex items-center gap-2"
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2"
         >
-          <ArrowLeft className="h-4 w-4" />
-          {t('common.back')}
-        </Button>
+          ← {t('common.back')}
+        </button>
       </div>
 
       {products && products.length > 0 ? (
@@ -40,7 +36,7 @@ export function SupplierProductsPage() {
               key={product.id}
               className="bg-white rounded-lg shadow hover:shadow-md transition-shadow overflow-hidden"
             >
-              {product.images && product.images.length > 0 && (
+              {product.images && product.images.length > 0 && product.images[0] && (
                 <img
                   src={product.images[0].url}
                   alt={product.title}
@@ -63,12 +59,12 @@ export function SupplierProductsPage() {
                 )}
                 
                 {/* SKUs and Offers */}
-                {product.skus && product.skus.length > 0 && (
+                {product.skus && product.skus.length > 0 && product.skus[0] && (
                   <div className="mt-4 pt-4 border-t">
                     <p className="text-sm font-medium text-gray-700 mb-2">
                       {t('products.skus')}: {product.skus.length}
                     </p>
-                    {product.skus[0].offers && product.skus[0].offers.length > 0 && (
+                    {product.skus[0].offers && product.skus[0].offers.length > 0 && product.skus[0].offers[0] && (
                       <div className="space-y-1">
                         <p className="text-sm text-gray-600">
                           {t('common.price')}: R$ {(product.skus[0].offers[0].msrpCents / 100).toFixed(2)}
