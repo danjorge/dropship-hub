@@ -39,12 +39,10 @@ class ApiClient {
       }
     }
 
-    // Add x-org-id header if required
-    if (requiresOrg) {
-      const orgId = storage.getActiveOrgId();
-      if (orgId) {
-        requestHeaders['x-org-id'] = orgId;
-      }
+    // Always add x-org-id header if available (most routes need it)
+    const orgId = storage.getActiveOrgId();
+    if (orgId) {
+      requestHeaders['x-org-id'] = orgId;
     }
 
     try {
