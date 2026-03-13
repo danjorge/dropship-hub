@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreatePixPayment, useConfirmPixPayment } from '@/hooks/useFinance';
-import QRCode from 'react-qr-code';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface PixPaymentModalProps {
   onClose: () => void;
@@ -135,9 +135,11 @@ export function PixPaymentModal({ onClose }: PixPaymentModalProps) {
               <div className="bg-gray-50 p-4 rounded-lg text-center">
                 <p className="text-sm text-gray-600 mb-2">{t('finance.scanQRCode')}</p>
                 <div className="bg-white p-4 inline-block rounded-lg">
-                  {pixPayment?.qrCodeData && (
-                    <QRCode value={pixPayment.qrCodeData} size={200} />
-                  )}
+                  <div className="flex justify-center mb-6">
+                    {pixPayment?.qrCodeData && (
+                      <QRCodeSVG value={pixPayment.qrCodeData} size={200} />
+                    )}
+                  </div>
                 </div>
               </div>
 
