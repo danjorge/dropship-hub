@@ -237,7 +237,6 @@ export class CatalogService {
             offers: {
               where: {
                 supplierOrgId,
-                stockQty: { gt: 0 },
               },
             },
           },
