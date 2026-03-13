@@ -7,16 +7,18 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OrgGuard } from '../auth/guards/org.guard';
 import { OrgId } from '../auth/decorators/org-id.decorator';
 import { FinanceService } from './finance.service';
 import { CreatePixPaymentDto, ConfirmPixPaymentDto } from './dto/finance.dto';
 
 @ApiTags('finance')
 @ApiBearerAuth()
+@ApiSecurity('x-org-id')
 @Controller('finance')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, OrgGuard)
 export class FinanceController {
   constructor(private financeService: FinanceService) {}
 
