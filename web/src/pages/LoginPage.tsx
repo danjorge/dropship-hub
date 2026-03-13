@@ -24,10 +24,6 @@ export function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: 'admin@dropship.local',
-      password: 'admin123',
-    },
   });
 
   useEffect(() => {
@@ -70,6 +66,7 @@ export function LoginPage() {
                 id="email"
                 type="email"
                 autoComplete="email"
+                placeholder="your.email@example.com"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.email && (
@@ -89,6 +86,7 @@ export function LoginPage() {
                 id="password"
                 type="password"
                 autoComplete="current-password"
+                placeholder="Enter your password"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.password && (
@@ -119,7 +117,7 @@ export function LoginPage() {
         <div className="mt-4 text-center text-sm text-gray-600">
           <p>Demo credentials:</p>
           <p className="font-mono text-xs mt-1">
-            admin@dropship.local / admin123
+            demo-merchant@dropshiphub.com / DemoMerchant2024!
           </p>
         </div>
       </div>
