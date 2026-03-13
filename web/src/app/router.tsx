@@ -34,6 +34,7 @@ export function AppRouter() {
                   
                   {/* Merchant: Suppliers */}
                   <Route path="/catalog/suppliers" element={<SuppliersListPage />} />
+                  <Route path="/catalog/suppliers/:supplierOrgId/products" element={<SupplierProductsPage />} />
                   
                   {/* Merchant: Listings */}
                   <Route path="/listings" element={<ListingsPage />} />

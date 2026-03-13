@@ -13,6 +13,12 @@
     "invalidCredentials": "E-mail ou senha inválidos",
     "loginError": "Falha no login. Por favor, tente novamente."
   },
+  "common": {
+    "back": "Voltar",
+    "price": "Preço",
+    "stock": "Estoque",
+    "error": "Erro ao carregar dados"
+  },
   "navigation": {
     "dashboard": "Painel",
     "products": "Produtos",
